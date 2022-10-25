@@ -7,7 +7,12 @@ function urlFor (source) {
 }
 
 const Post = ({ post }) => {
-  const { title = 'Missing title', name = 'Missing name', categories} = post;
+  const {
+    title = 'Missing title',
+    name = 'Missing name',
+    categories,
+    authorImage
+  } = post;
   return (
     <article>
       <h1>{title}</h1>
@@ -18,6 +23,14 @@ const Post = ({ post }) => {
           {categories.map(category => <li key={category}>{category}</li>)}
         </ul>
       )}
+
+      {authorImage && (
+        <div>
+          <img
+            src={urlFor(authorImage).width(50).url()}
+          />
+        </div>
+      )}
     </article>
   )
 }
@@ -25,7 +38,8 @@ const Post = ({ post }) => {
 const query = groq`*[_type == "post" && slug.current == $slug][0]{
   title, 
   "name": author->name,
-  "categories": categories[]->title
+  "categories": categories[]->title,
+  "authorImage": author->image
 }`
 
 export async function getStaticPaths() {
